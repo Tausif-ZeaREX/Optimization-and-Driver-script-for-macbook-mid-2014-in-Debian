@@ -78,9 +78,13 @@ sudo systemctl daemon-reload
 
 # 2. Enable the service to start on boot AND start it immediately right now
 sudo systemctl enable --now cpupower-gui.service
-
+sudo powercap-info intel-rapl -z 0
 # 3. Check the real-time status to verify it is running successfully (Note: fixed 'systemctl' typo)
-systemctl status cpupower-gui.service      ]]]]]]]]]]]]]]
+systemctl status cpupower-gui.service      
+
+sudo powercap-info intel-rapl -z 0
+
+]]]]]]]]]]]]]]
 
 ....................................         For more Powersave      ...........................................
                                      add maxcpus=6 in /etc/default/grub 
