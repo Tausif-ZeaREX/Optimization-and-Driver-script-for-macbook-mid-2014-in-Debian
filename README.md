@@ -13,7 +13,7 @@ This script resolves out-of-the-box hardware issues specific to Intel Haswell-ba
 | :--- | :--- | :--- | :--- | :--- |
 | **MacBookPro11,1** | 13-inch | Intel Core i5/i7 (Haswell) | Broadcom BCM4360 | Intel Iris 5100 |
 | **MacBookPro11,2** | 15-inch | Intel Core i7 (Haswell) | Broadcom BCM4360 | Intel Iris Pro 5200 |
-| **MacBookPro11,3** | 15-inch | Intel Core i7 (Haswell) | Broadcom BCM4360 | NVIDIA GeForce GT 750M |
+
 
 ---
 
@@ -133,17 +133,7 @@ sudo reboot
 
 ---
 
-### 3. Dual-GPU Setup (15-inch DG Model Only - `MacBookPro11,3`)
 
-If you are using the 15-inch model with the **NVIDIA GeForce GT 750M**, install the legacy 470.x series driver:
-
-```bash
-sudo apt update
-sudo apt install nvidia-driver-470
-
-```
-
----
 
 ## 🔍 Hardware Troubleshooting
 
