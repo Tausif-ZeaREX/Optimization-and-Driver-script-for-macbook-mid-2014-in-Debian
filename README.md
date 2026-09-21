@@ -168,11 +168,3 @@ dmesg | grep -i facetimehd
 
 
 ---
-
-## 📜 License
-
-Distributed under the [MIT License](https://www.google.com/search?q=LICENSE&utm_source=gemini).
-
-```
-
-```
