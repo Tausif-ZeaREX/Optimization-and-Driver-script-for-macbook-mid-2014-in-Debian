@@ -12,7 +12,7 @@ fi
 # Run sed with a condition: only match 'non-free-firmware' if NOT followed by 'contrib' or 'non-free'
 sudo sed -i -E '/contrib|non-free/!s/non-free-firmware/non-free-firmware contrib non-free/g' "$FILE"
 
-echo "APT sources updated safely without duplications."
+echo "APT sources updated safely without duplications.       /etc/apt/sources.list"
 
 
 sudo apt update
@@ -53,9 +53,10 @@ echo '>>>>>>>>>>>>>>>>>>>>>>   CPU Powercap installation   <<<<<<<<<<<<<<<<<<<<<
 sudo apt install powercap-utils
 echo ''
 echo ' !!!!!!!!!!!!!!!!!  Please make this service   >>>>>
+((((( /etc/systemd/system/powercap-limit.service ))))))
 ...........................................................................................................................
 ...........................................................................................................................
-etc/systemd/system/powercap-limit.service
+
 [Unit]
 Description=Apply Balanced 28W RAPL Power Limit
 After=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
