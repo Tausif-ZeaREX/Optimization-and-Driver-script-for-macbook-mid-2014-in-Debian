@@ -39,8 +39,8 @@ This script resolves out-of-the-box hardware issues specific to Intel Haswell-ba
 
 1. **Clone this repository:**
    ```bash
-   git clone [https://github.com/your-username/macbookpro-2014-linux-setup.git](https://github.com/your-username/macbookpro-2014-linux-setup.git)
-   cd macbookpro-2014-linux-setup
+   git clone https://github.com/Tausif-ZeaREX/Optimization-script-for-macbook-mid-2014.git
+   cd Optimization-script-for-macbook-mid-2014.git
 
 ```
 
