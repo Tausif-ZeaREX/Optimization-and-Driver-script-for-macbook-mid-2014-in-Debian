@@ -1,9 +1,11 @@
 
 # Debian Post-Install & Hardware Fix Script (MacBook Pro Mid 2014)
 
-A tailored post-installation setup script for running **Debian 12 (Bookworm)** or **Ubuntu 22.04 / 24.04 LTS** on the **Apple MacBook Pro (Retina, 13-inch & 15-inch, Mid 2014)**. 
+A tailored post-installation setup script specifically tested on **Debian 13 (Trixie)** for the **Apple MacBook Pro (Retina, 13-inch & 15-inch, Mid 2014)**. 
 
 This script resolves out-of-the-box hardware issues specific to Intel Haswell-based MacBooks, including FaceTime HD camera drivers, Broadcom BCM4360 Wi-Fi support, CPU power/thermal capping, and multimedia codecs.
+
+> **Note:** Tested and confirmed working on **Debian 13 (Trixie)**. Compatibility with Ubuntu or other Debian derivatives is not guaranteed.
 
 ---
 
@@ -42,7 +44,7 @@ This script resolves out-of-the-box hardware issues specific to Intel Haswell-ba
    git clone https://github.com/Tausif-ZeaREX/Optimization-script-for-macbook-mid-2014.git
    cd Optimization-script-for-macbook-mid-2014.git
 
-```
+```https://github.com/Tausif-ZeaREX/Optimization-script-for-macbook-mid-2014-in-Debian.git
 
 2. **Make the script executable:**
 
