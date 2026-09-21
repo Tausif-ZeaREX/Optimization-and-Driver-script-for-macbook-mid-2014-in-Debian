@@ -48,6 +48,16 @@ sudo apt install ffmpeg gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstre
 echo ''
 echo ''
 echo ''
+echo '>>>>>>>>>>>>>>>>>>>>>>   AutoCpufreq installation   <<<<<<<<<<<<<<<<<<<<<<<<'
+git clone https://github.com/AdnanHodzic/auto-cpufreq.git
+cd auto-cpufreq && sudo ./auto-cpufreq-installer
+
+
+
+
+echo ''
+echo ''
+echo ''
 echo '>>>>>>>>>>>>>>>>>>>>>>   CPU Powercap installation   <<<<<<<<<<<<<<<<<<<<<<<<'
 
 sudo apt install powercap-utils
@@ -78,10 +88,10 @@ WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target s
 sudo systemctl daemon-reload
 
 # 2. Enable the service to start on boot AND start it immediately right now
-sudo systemctl enable --now cpupower-gui.service
+   sudo systemctl enable --now powercap-limit.service 
 sudo powercap-info intel-rapl -z 0
 # 3. Check the real-time status to verify it is running successfully (Note: fixed 'systemctl' typo)
-systemctl status cpupower-gui.service      
+    systemctl status powercap-limit.service 
 
 sudo powercap-info intel-rapl -z 0
 
