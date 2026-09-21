@@ -45,15 +45,15 @@ This script resolves out-of-the-box hardware issues specific to Intel Haswell-ba
 ```
 
 2. **Make the script executable:**
-```bash
-chmod +x setup.sh
+
+chmod +x install.sh
 
 ```
 
 
 3. **Execute the script:**
-```bash
-./setup.sh
+
+./install.sh
 
 ```
 
