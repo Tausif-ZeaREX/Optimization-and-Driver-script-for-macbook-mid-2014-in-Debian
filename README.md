@@ -86,7 +86,7 @@ After=multi-user.target suspend.target hibernate.target hybrid-sleep.target susp
 Type=oneshot
 ExecStartPre=-/sbin/modprobe intel_rapl_msr
 ExecStartPre=/bin/sleep 2
-ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 25777777
+ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 29777777
 ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 35999999
 
 [Install]

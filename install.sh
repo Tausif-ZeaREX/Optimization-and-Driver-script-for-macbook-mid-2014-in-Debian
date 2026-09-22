@@ -77,7 +77,7 @@ Type=oneshot
 ExecStartPre=-/sbin/modprobe intel_rapl_msr
 # Wait for the powercap sysfs tree to become available
 ExecStartPre=/bin/sleep 2
-ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 19777777
+ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 29777777
 ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 35999999
 
 [Install]
