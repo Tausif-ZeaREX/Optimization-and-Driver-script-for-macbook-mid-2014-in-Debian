@@ -155,9 +155,10 @@ sudo modprobe -r facetimehd
 sudo modprobe facetimehd
 dmesg | grep -i facetimehd
 
----
+```
 
-# Linux Bluetooth Controller Input Lag Fix
+
+# <<  Linux Bluetooth Controller Input Lag Fix  >>>>>>
 
 A clean guide to permanently fixing slow response rates, input lag, and frame drops for Bluetooth wireless controllers (Xbox, PlayStation, 8BitDo) running on Linux. This forces the kernel to poll the controller at its minimum allowable Bluetooth Low Energy (LE) interval: **6 (7.5ms)**.
 
