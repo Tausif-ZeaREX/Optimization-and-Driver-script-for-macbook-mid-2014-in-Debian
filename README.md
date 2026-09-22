@@ -158,7 +158,7 @@ dmesg | grep -i facetimehd
 
 
 
->>>>>> Bluetooth slow response time issue fix <<<<<
+## Bluetooth slow response time issue fix <<<<<
 
 # Fix Linux Bluetooth Controller Input Lag & Slow Polling Rate
 
