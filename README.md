@@ -155,7 +155,7 @@ sudo modprobe -r facetimehd
 sudo modprobe facetimehd
 dmesg | grep -i facetimehd
 
-
+---
 
 # Linux Bluetooth Controller Input Lag Fix
 
