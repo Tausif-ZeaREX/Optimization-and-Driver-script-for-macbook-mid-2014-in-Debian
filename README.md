@@ -157,13 +157,12 @@ dmesg | grep -i facetimehd
 
 
 
-
-
-Bluetooth slow response time issue fix <<<<<
+# Linux Bluetooth Controller Input Lag Fix
 
 A clean guide to permanently fixing slow response rates, input lag, and frame drops for Bluetooth wireless controllers (Xbox, PlayStation, 8BitDo) running on Linux. This forces the kernel to poll the controller at its minimum allowable Bluetooth Low Energy (LE) interval: **6 (7.5ms)**.
 
-### The Problem
+Bluetooth slow response time issue fix <<<<<
+
 By default, the Linux Bluetooth stack (BlueZ) often negotiates high, power-saving connection intervals for low-energy devices. A default configuration can set the connection intervals between **24 (30ms)** and **40 (50ms)**, resulting in noticeable latency during gaming. 
 
 ---
