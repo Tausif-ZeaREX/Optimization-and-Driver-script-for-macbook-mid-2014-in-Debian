@@ -219,8 +219,8 @@ This method configures BlueZ to apply high-performance parameters to all Bluetoo
 
 With your controller connected, re-run the diagnostic checks:
 ```bash
-cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
-cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
+sudo cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
+sudo cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
 ```
 
 If both values return **`6`**, your system is successfully polling the wireless controller at a crisp, lag-free **7.5ms interval**.
