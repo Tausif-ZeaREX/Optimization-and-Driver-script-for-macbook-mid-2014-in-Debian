@@ -233,3 +233,17 @@ If both values return **`6`**, your system is successfully polling the wireless 
 ```bash
 echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
 ```
+## Changing resolution in Niri
+
+In  ~/.config/niri/config.kdl
+
+```
+output "eDP-1" {
+    // Forces a custom 16:10 resolution matching your native screen shape
+    mode custom=true "1920x1200@59.990"
+
+    // Keeps it pixel-for-pixel sharp at this size
+    scale 1.19
+}
+
+```
