@@ -101,9 +101,9 @@ sudo powercap-info intel-rapl -z 0
                                      add maxcpus=6 in /etc/default/grub 
 eg. GRUB_CMDLINE_LINUX_DEFAULT='quiet splash maxcpus=6 resume=UUID=d0dadc03-1366-48d0-b813-73b23b2384c8'
 '
-
 echo ""
-echo "Checking Bluetooth respnse time "
+echo ""
+echo ">>>>>>>>>>>>>>  Checking Bluetooth respnse time  <<<<<<<<<<<<<<<<<<<<<"
 
 sudo cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
 sudo cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval

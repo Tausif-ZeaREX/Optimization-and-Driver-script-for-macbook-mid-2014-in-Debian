@@ -224,3 +224,12 @@ sudo cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
 ```
 
 If both values return **`6`**, your system is successfully polling the wireless controller at a crisp, lag-free **7.5ms interval**.
+
+---
+
+## Extra 
+## Brightness Control
+
+```bash
+echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
+```
