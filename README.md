@@ -228,7 +228,7 @@ If both values return **`6`**, your system is successfully polling the wireless 
 ---
 
 ## Extra 
-## Brightness Control
+## Keyboard Backlight Control
 
 ```bash
 echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
