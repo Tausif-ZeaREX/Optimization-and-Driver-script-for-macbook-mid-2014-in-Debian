@@ -531,3 +531,63 @@ output "eDP-1" {
 }
 
 ```
+
+# Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification)
+
+This project provides a robust solution for switching Intel processor power ceilings (RAPL wattages) on Linux systems (specifically tested on MacBook Pro Mid-2014 running Debian/GNOME Shell). 
+
+By leveraging **Polkit (PolicyKit)**, this setup allows you to switch profiles natively using **Custom GUI Keyboard Shortcuts** seamlessly **without `sudo`** and **without password prompts**, while pushing elegant desktop notification toasts.
+
+---
+
+## 🚀 Setup Instructions
+
+### 1. Deploy the Management Script
+This master script handles the hardware register limits via `powercap-set` and safely bridges root permissions back to user-space to display desktop notifications.
+
+Run the following block directly in your terminal to create the script securely:
+
+```bash
+sudo tee /usr/local/bin/powercap-profile << 'EOF'
+#!/bin/bash
+# Ensure the RAPL module is loaded
+/sbin/modprobe intel_rapl_msr 2>/dev/null
+sleep 2
+
+# Helper function to send desktop notifications from root back to your user session (tausif)
+send_notification() {
+    local title="$1"
+    local message="$2"
+    local icon="$3"
+    # Sends the pop-up notification directly to your graphical desktop interface
+    sudo -u tausif DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "$title" "$message" -i "$icon" -t 3000
+}
+
+case "$1" in
+    performance)
+        echo "Applying Performance Profile..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 45000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 54000000
+        send_notification "Power Manager" "🚀 Performance Profile Applied (45W/54W)" "power-profile-performance"
+        ;;
+    powersave)
+        echo "Applying Powersave Profile..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 15000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 20000000
+        send_notification "Power Manager" "🔋 Powersave Profile Applied (15W/20W)" "power-profile-powersave"
+        ;;
+    balanced)
+        echo "Applying Balanced Profile..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 27777777
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 31999999
+        send_notification "Power Manager" "⚖️ Balanced Profile Applied (28W/32W)" "power-profile-balanced"
+        ;;
+    *)
+        echo "Usage: $0 {performance|powersave|balanced}"
+        exit 1
+        ;;
+esac
+EOF
+```
+
+---
