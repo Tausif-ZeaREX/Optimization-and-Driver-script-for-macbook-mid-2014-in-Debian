@@ -106,6 +106,107 @@ sudo systemctl enable --now powercap-limit.service
 
 ---
 
+# Linux RAPL Power Profiles Manager
+
+A lightweight utility and systemd service to manage Intel/AMD processor power ceilings on Linux using **Runtime Average Power Limiting (RAPL)** via `powercap`. Easily switch between **Performance**, **Balanced**, and **Powersave** profiles manually or automatically at boot and resume.
+
+## Features
+* 🚀 **Instant Profile Switching:** Change wattage configurations on the fly.
+* 🔋 **Persistent Across Reboots:** Restores your favorite default profile on system boot.
+* 🌙 **Resume Hook Support:** Re-applies limits instantly after system suspension, hibernation, or sleep.
+
+---
+### 2. Deploy the Management Script
+Create the profile script to handle different wattage limits:
+```bash
+sudo nano /usr/local/bin/powercap-profile
+```
+Paste the script content below, then save and exit (`Ctrl+O`, `Enter`, `Ctrl+X`):
+```bash
+#!/bin/bash
+/sbin/modprobe intel_rapl_msr 2>/dev/null
+sleep 2
+
+case "$1" in
+    performance)
+        echo "Applying Performance Profile (45W/54W)..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 45000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 54000000
+        ;;
+    powersave)
+        echo "Applying Powersave Profile (15W/20W)..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 15000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 20000000
+        ;;
+    balanced)
+        echo "Applying Balanced Profile (28W/32W)..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 27777777
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 31999999
+        ;;
+    *)
+        echo "Usage: $0 {performance|powersave|balanced}"
+        exit 1
+        ;;
+esac
+```
+Make the script executable:
+```bash
+sudo chmod +x /usr/local/bin/powercap-profile
+```
+
+### 3. Create the Systemd Automation Service
+Create the service configuration to automatically apply your preferred profile on boot and wake:
+```bash
+sudo nano /etc/systemd/system/powercap-limit.service
+```
+Paste the following service definition:
+```ini
+[Unit]
+Description=Apply Default RAPL Power Limit
+After=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/powercap-profile balanced
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+```
+*Note: To change your default system-wide startup profile, change `balanced` at the end of the `ExecStart` line to `powersave` or `performance`.*
+
+### 4. Enable and Activate
+Reload systemd configurations, enable the service triggers, and fire it up manually:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable powercap-limit.service
+sudo systemctl start powercap-limit.service
+```
+
+---
+
+## 🕹️ Usage
+
+### Manual Switching
+You can manually switch between profiles at any time via the terminal:
+
+* 🚀 **Performance:** `sudo powercap-profile performance`
+* ⚖️ **Balanced:** `sudo powercap-profile balanced`
+* 🔋 **Powersave:** `sudo powercap-profile powersave`
+
+### Verify Settings
+To check if the micro-watt values are properly pushed to your hardware sysfs architecture, run:
+```bash
+powercap-info -p intel-rapl
+```
+
+---
+
+## ⚠️ Configuration Disclaimers
+* **Intel Zone Support:** Depending on your machine generation (Intel Core / AMD Ryzen), zone index `0` and constraints `-c 0`/`-c 1` can represent Long Term (PL1) and Short Term (PL2) limits differently. Modify the script `-l` values (in microwatts) to match your CPU thermal capabilities.
+* **Overriding Utilities:** Software like `thermald`, `TLP`, or `power-profiles-daemon` might try to overwrite powercap nodes during state transitions. Ensure they do not conflict with your defined limits.
+
+
 ### 2. Battery & Core Tuning (Optional)
 
 To reduce power consumption on 15" Quad-Core models or extend battery life on 13" models:
