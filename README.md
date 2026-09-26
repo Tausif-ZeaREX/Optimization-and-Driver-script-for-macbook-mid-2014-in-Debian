@@ -220,7 +220,6 @@ Intel Haswell laptop architectures run notably warm under modern Wayland environ
 * **Machine:** MacBook Pro 11,1 (Mid 2014, 13-inch or iGPU-only 15-inch variant)
 * **Processor:** Intel Core i5 / i7 (Haswell Architecture)
 * **Graphics:** Intel Iris Graphics (No discrete NVIDIA/AMD GPU)
-* **Compositor:** Wayland / `niri`
 * **Co-Utilities:** `auto-cpufreq` + `powercap-utils` + `linux-cpupower`
 
 ---
@@ -256,7 +255,7 @@ log_level: 0
 ```
 
 ### 🧠 Profile Optimizations Breakdown
-1. **`fan_min: 2111`**: Locks the fan to its true native hardware idle speed. This prevents the daemon from forcing a sub-2000 RPM speed, which chokes air volume on older heat sinks.
+1. **`fan_min: 2999`**: Locks the fan to its true native hardware idle speed. This prevents the daemon from forcing a sub-2000 RPM speed, which chokes air volume on older heat sinks.
 2. **Aggressive Thermal Ceiling (`62°C`)**: Instructs `macfanctld` to scale the fan curve to maximum velocity much earlier. This actively pulls down internal temperatures before the aluminum top-case heats up your lap or keyboard.
 3. **GPU Neutralization (`TG0P`)**: Setting the GPU bounds to `97°C - 99°C` keeps the missing dedicated graphics architecture from feeding zeroed or erroneous telemetry to the tracking loop.
 
