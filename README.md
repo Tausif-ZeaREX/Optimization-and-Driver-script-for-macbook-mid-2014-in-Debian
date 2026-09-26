@@ -203,6 +203,85 @@ powercap-info -p intel-rapl
 * **Intel Zone Support:** Depending on your machine generation (Intel Core / AMD Ryzen), zone index `0` and constraints `-c 0`/`-c 1` can represent Long Term (PL1) and Short Term (PL2) limits differently. Modify the script `-l` values (in microwatts) to match your CPU thermal capabilities.
 * **Overriding Utilities:** Software like `thermald`, `TLP`, or `power-profiles-daemon` might try to overwrite powercap nodes during state transitions. Ensure they do not conflict with your defined limits.
 
+# Passwordless Keyboard Shortcuts for Linux RAPL Power Profiles Manager
+
+This guide details how to configure **Polkit (PolicyKit)** on Linux (Debian 12+, Ubuntu 24.04+, and modern GNOME Shell environments) to execute your custom hardware power-capping profile script seamlessly **without `sudo`** and **without password prompts**.
+
+By leveraging Polkit's `pkexec` mechanism, your user account can trigger hardware-level changes directly through native desktop environment keyboard shortcuts.
+
+---
+
+## 🚀 Setup Instructions
+
+### 1. Create the Polkit Rule File
+Polkit handles elevated privileges safely in the background. Create a dedicated rule allowing your specific user to execute the `powercap-profile` binary without authentication prompts.
+
+Open a terminal and create the configuration file:
+```bash
+sudo nano /etc/polkit-1/rules.d/10-powercap-profile.rules
+```
+
+Paste the following configuration into the file. **Make sure to replace `tausif` with your exact system username**:
+```javascript
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.policykit.exec" &&
+        action.lookup("program") == "/usr/local/bin/powercap-profile" &&
+        subject.user == "tausif") {
+        return polkit.Result.YES;
+    }
+});
+```
+*Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X`).*
+
+### 2. Set Secure Permissions (Required)
+Polkit ignores configuration rules if their permissions are too loose. Restrict file access to system root:
+```bash
+sudo chown root:root /etc/polkit-1/rules.d/10-powercap-profile.rules
+sudo chmod 644 /etc/polkit-1/rules.d/10-powercap-profile.rules
+```
+
+---
+
+## 🕹 Usage & Integration
+
+### Terminal Execution
+You can now safely switch power ceilings using `pkexec` instead of `sudo`. The connection will initialize immediately without a password prompt:
+
+* **Performance Mode:** `pkexec /usr/local/bin/powercap-profile performance`
+* **Balanced Mode:** `pkexec /usr/local/bin/powercap-profile balanced`
+* **Powersave Mode:** `pkexec /usr/local/bin/powercap-profile powersave`
+
+### 💻 Creating Desktop Keyboard Shortcuts (GNOME / DMS Shell)
+To bind these profiles to physical hardware keys:
+
+1. Open your system **Settings** menu.
+2. Navigate to **Keyboard** → **Keyboard Shortcuts** → **Custom Shortcuts**.
+3. Click **Add (+)** and create entries for your desired profiles:
+
+| Profile Name | Execution Command | Suggested Shortcut Bind |
+| :--- | :--- | :--- |
+| **Power Profile: Performance** | `pkexec /usr/local/bin/powercap-profile performance` | `Super + Alt + O` |
+| **Power Profile: Balanced** | `pkexec /usr/local/bin/powercap-profile balanced` | `Super + Alt + I` |
+| **Power Profile: Powersave** | `pkexec /usr/local/bin/powercap-profile powersave` | `Super + Alt + P` |
+
+4. Click **Add** to save. Your hotkeys will instantly run the configurations silently in the background.
+
+---
+
+## ⚙️ Optional: Shell Quality-of-Life Alias
+If you want to type the command cleanly into your terminal shell without adding the `pkexec` prefix every time, append an alias to your shell runcom configuration:
+
+```bash
+echo "alias powercap-profile='pkexec /usr/local/bin/powercap-profile'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Now, typing a bare profile command executes passwordless automatically:
+```bash
+powercap-profile powersave
+```
+
+
 # Macfanctl Configuration for MacBook Pro (Mid 2014, iGPU-Only)
 
 [![Linux](https://shields.io)](https://kernel.org)
