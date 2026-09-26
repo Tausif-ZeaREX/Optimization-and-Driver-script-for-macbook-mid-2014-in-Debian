@@ -203,6 +203,114 @@ powercap-info -p intel-rapl
 * **Intel Zone Support:** Depending on your machine generation (Intel Core / AMD Ryzen), zone index `0` and constraints `-c 0`/`-c 1` can represent Long Term (PL1) and Short Term (PL2) limits differently. Modify the script `-l` values (in microwatts) to match your CPU thermal capabilities.
 * **Overriding Utilities:** Software like `thermald`, `TLP`, or `power-profiles-daemon` might try to overwrite powercap nodes during state transitions. Ensure they do not conflict with your defined limits.
 
+# Macfanctl Configuration for MacBook Pro (Mid 2014, iGPU-Only)
+
+[![Linux](https://shields.io)](https://kernel.org)
+[![Hardware](https://shields.io)](https://apple.com)
+[![License: MIT](https://shields.io)](https://opensource.org)
+
+An optimized thermal profile and deployment guide for running the `macfanctld` daemon on a **Mid 2014 MacBook Pro** with **Intel Integrated Graphics (iGPU)** under Linux. 
+
+Intel Haswell laptop architectures run notably warm under modern Wayland environments (such as `niri`). This profile focuses on aggressive, proactive thermal curve responses while isolating non-existent dedicated GPU hardware sensors to eliminate daemon errors.
+
+---
+
+## 💻 Hardware Profile & Stack
+
+* **Machine:** MacBook Pro 11,1 (Mid 2014, 13-inch or iGPU-only 15-inch variant)
+* **Processor:** Intel Core i5 / i7 (Haswell Architecture)
+* **Graphics:** Intel Iris Graphics (No discrete NVIDIA/AMD GPU)
+* **Compositor:** Wayland / `niri`
+* **Co-Utilities:** `auto-cpufreq` + `powercap-utils` + `linux-cpupower`
+
+---
+
+## 🛠️ Configuration File (`/etc/macfanctl.conf`)
+
+Place the following configuration layout into your `/etc/macfanctl.conf` path:
+
+```text
+# Config file for macfanctl daemon optimized for Mid 2014 iGPU MacBook Pro
+# Note: 0 < temp_X_floor < temp_X_ceiling
+#       0 < fan_min < 6200
+
+# True physical hardware baseline to maintain silent, steady airflow
+fan_min: 2999
+
+# Aggressive cooling floors to preemptively fight idle heat build-up
+temp_avg_floor: 45
+temp_avg_ceiling: 62
+
+temp_TC0P_floor: 45
+temp_TC0P_ceiling: 62
+
+# NO DEDICATED GPU - Set artificially high to neutralize missing TG0P sensor hooks
+temp_TG0P_floor: 97
+temp_TG0P_ceiling: 99
+
+# Exclude list for unstable sensor matrices
+exclude:
+
+# Logging: 0 = Startup/Exit/Errors only, 2 = Full sensor matrix trace
+log_level: 0
+```
+
+### 🧠 Profile Optimizations Breakdown
+1. **`fan_min: 2111`**: Locks the fan to its true native hardware idle speed. This prevents the daemon from forcing a sub-2000 RPM speed, which chokes air volume on older heat sinks.
+2. **Aggressive Thermal Ceiling (`62°C`)**: Instructs `macfanctld` to scale the fan curve to maximum velocity much earlier. This actively pulls down internal temperatures before the aluminum top-case heats up your lap or keyboard.
+3. **GPU Neutralization (`TG0P`)**: Setting the GPU bounds to `97°C - 99°C` keeps the missing dedicated graphics architecture from feeding zeroed or erroneous telemetry to the tracking loop.
+
+---
+
+## 🚀 Installation & Deployment
+
+### 1. Install dependencies and the daemon
+```bash
+sudo apt update
+sudo apt install macfanctld lm-sensors linux-cpupower
+```
+
+### 2. Apply the profile
+Clone this repository, then copy the configuration file over your system default:
+```bash
+sudo cp macfanctl.conf /etc/macfanctl.conf
+```
+
+### 3. Manage the background service
+Enable the daemon to run immediately and automatically on system boot:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable macfanctld
+sudo systemctl restart macfanctld
+```
+
+---
+
+## 📊 Live Monitoring and Telemetry
+
+Use these terminal triggers to verify the active performance metrics of your MacBook:
+
+### Check Target Service Status
+Confirm the service status shows `active (running)` without syntax rejections:
+```bash
+sudo systemctl status macfanctld
+```
+
+### Read True Fan RPM Output
+Poll the hardware states directly from the Apple System Management Controller (`applesmc`) interface:
+```bash
+cat /sys/devices/platform/applesmc.768/fan1_output
+```
+
+### Read Core CPU Temperature
+```bash
+cat /sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input
+```
+*(Note: Output values render as 5-digit millidegrees, meaning an output of `61000` is exactly 61°C).*
+
+---
+
+
 
 ### 2. Battery & Core Tuning (Optional)
 
