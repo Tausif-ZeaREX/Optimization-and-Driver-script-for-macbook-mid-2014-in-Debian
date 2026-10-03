@@ -98,8 +98,8 @@ sudo powercap-info intel-rapl -z 0
 ]]]]]]]]]]]]]]
 
 ....................................         For more Powersave      ...........................................
-                                     add maxcpus=6 in /etc/default/grub 
-eg. GRUB_CMDLINE_LINUX_DEFAULT='quiet splash maxcpus=6 resume=UUID=d0dadc03-1366-48d0-b813-73b23b2384c8'
+                                     add maxcpus=6 or nosmt  in /etc/default/grub 
+eg. GRUB_CMDLINE_LINUX_DEFAULT='quiet splash nosmt resume=UUID=d0dadc03-1366-48d0-b813-73b23b2384c8'
 '
 echo ""
 echo ""
