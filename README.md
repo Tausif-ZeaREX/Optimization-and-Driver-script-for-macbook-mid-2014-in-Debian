@@ -564,6 +564,46 @@ output "eDP-1" {
 }
 
 ```
+# 🎞️ anifetch-bashrc
+
+Animated GIF + system info in your terminal every time you open it, powered by [anifetch](https://github.com/Notenlish/anifetch).
+
+## 📦 Requirements
+
+* [anifetch](https://github.com/Notenlish/anifetch)
+* [fastfetch](https://github.com/fastfetch-cli/fastfetch)
+* [ffmpeg](https://ffmpeg.org/)
+* [chafa](https://hpjansson.dev/chafa/)
+* `ja_JP.UTF-8` locale
+
+## ⚙️ Setup
+
+Add this to the end of `~/.bashrc`:
+
+```bash
+if [[ $- == *i* ]]; then
+    LANG=ja_JP.UTF-8 anifetch /home/tausif/Videos/Alpha\ Pgr\ GIF.gif -w 55 -ca " --symbols wide --fg-only"
+fi
+```
+
+Reload:
+
+```bash
+source ~/.bashrc
+```
+
+> ⚠️ Replace the GIF path with your own file.
+
+## 🎨 Tweaks
+
+* `-w 55`: animation width
+* `--symbols wide`: Chafa symbol style
+* `--fg-only`: foreground colors only
+
+## 🙏 Credits
+
+[anifetch](https://github.com/Notenlish/anifetch) by Notenlish
+
 
 # Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification) (⚠️ Not mandatory if you want more tweak and know how to do it ⚠️)
 

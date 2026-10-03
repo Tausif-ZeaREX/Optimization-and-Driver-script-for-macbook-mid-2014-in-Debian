@@ -3,6 +3,24 @@
 # Define the target file
 FILE="/etc/apt/sources.list"
 
+echo ""
+echo "==================================================================================================================="
+echo "Note:!!!!!!  Tested and confirmed working on Debian 13 (Trixie). Compatibility with Ubuntu or other Debian derivatives is not guaranteed. !!!!!!!!!!!"
+echo "==================================================================================================================="
+echo ""
+
+# Confirmation dialogue
+read -p "Do you want to proceed with the installation? (y/N): " choice
+case "$choice" in 
+  [yY][eE][sS]|[yY])
+    echo "Starting installation..."
+    ;;
+  *)
+    echo "Installation cancelled."
+    exit 0
+    ;;
+esac
+
 # Check if the file exists
 if [ ! -f "$FILE" ]; then
     echo "Error: $FILE not found."
@@ -11,10 +29,14 @@ fi
 
 # Run sed with a condition: only match 'non-free-firmware' if NOT followed by 'contrib' or 'non-free'
 sudo sed -i -E '/contrib|non-free/!s/non-free-firmware/non-free-firmware contrib non-free/g' "$FILE"
-
+echo ""
+echo ""
 echo "APT sources updated safely without duplications.       /etc/apt/sources.list"
-
-
+echo ""
+echo ""
+echo "Note:!!!!!!  Tested and confirmed working on Debian 13 (Trixie). Compatibility with Ubuntu or other Debian derivatives is not guaranteed. !!!!!!!!!!!"
+echo ""
+echo ""
 sudo apt update
 
 echo ''
@@ -62,7 +84,7 @@ echo '>>>>>>>>>>>>>>>>>>>>>>   CPU Powercap installation   <<<<<<<<<<<<<<<<<<<<<
 
 sudo apt install powercap-utils
 echo ''
-echo ' !!!!!!!!!!!!!!!!!  Please make this service   >>>>>
+echo " !!!!!!!!!!!!!!!!!  Please make this service   >>>>>
 ((((( /etc/systemd/system/powercap-limit.service ))))))
 ...........................................................................................................................
 ...........................................................................................................................
@@ -77,8 +99,8 @@ Type=oneshot
 ExecStartPre=-/sbin/modprobe intel_rapl_msr
 # Wait for the powercap sysfs tree to become available
 ExecStartPre=/bin/sleep 2
-ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 29777777
-ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 35999999
+ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 53777777
+ExecStart=/usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 55999999
 
 [Install]
 WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target 
@@ -99,8 +121,8 @@ sudo powercap-info intel-rapl -z 0
 
 ....................................         For more Powersave      ...........................................
                                      add maxcpus=6 or nosmt  in /etc/default/grub 
-eg. GRUB_CMDLINE_LINUX_DEFAULT='quiet splash nosmt resume=UUID=d0dadc03-1366-48d0-b813-73b23b2384c8'
-'
+eg. GRUB_CMDLINE_LINUX_DEFAULT='quiet splash nosmt resume=UUID=d0dadc03-1366-48d0-b813-73b23b2384c8 "
+
 echo ""
 echo ""
 echo ">>>>>>>>>>>>>>  Checking Bluetooth respnse time  <<<<<<<<<<<<<<<<<<<<<"
