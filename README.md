@@ -438,6 +438,155 @@ sudo systemctl enable --now powercap-limit.service
 
 ---
 
+
+### 2. Battery & Core Tuning (Optional best smt )
+
+To reduce power consumption on 15" Quad-Core models or extend battery life on 13" models:
+
+1. Edit `/etc/default/grub`:
+```bash
+sudo nano /etc/default/grub
+
+```
+
+
+2. Add `maxcpus=6` (or desired core limit) to `GRUB_CMDLINE_LINUX_DEFAULT`:
+```bash
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash maxcpus=6"
+
+```
+
+
+3. Update GRUB and reboot:
+```bash
+sudo update-grub
+sudo reboot
+
+```
+
+
+
+---
+
+
+
+## 🔍 Hardware Troubleshooting
+
+* **Wi-Fi Not Detected After Reboot:**
+Check if the `wl` module is active or if conflicting drivers are loaded:
+```bash
+sudo modprobe -r b43 brcmfmac
+sudo modprobe wl
+
+```
+
+
+* **Camera Module Issues:**
+If the FaceTime HD camera fails to initialize, force unload and reload the module:
+```bash
+sudo modprobe -r facetimehd
+sudo modprobe facetimehd
+dmesg | grep -i facetimehd
+
+```
+
+
+# <<  Linux Bluetooth Controller Input Lag Fix  >>>>>>
+
+A clean guide to permanently fixing slow response rates, input lag, and frame drops for Bluetooth wireless controllers (Xbox, PlayStation, 8BitDo) running on Linux. This forces the kernel to poll the controller at its minimum allowable Bluetooth Low Energy (LE) interval: **6 (7.5ms)**.
+
+Bluetooth slow response time issue fix <<<<<
+
+By default, the Linux Bluetooth stack (BlueZ) often negotiates high, power-saving connection intervals for low-energy devices. A default configuration can set the connection intervals between **24 (30ms)** and **40 (50ms)**, resulting in noticeable latency during gaming. 
+
+---
+
+### Quick Diagnostic
+
+Before making changes, check what your live kernel parameters are currently set to. Run the following commands while your controller is connected:
+
+```bash
+cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
+cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
+```
+*Note: If you receive a "No such file or directory" error, your Bluetooth adapter might be named `hci1`. Check using `ls /sys/kernel/debug/bluetooth/`.*
+
+If the numbers returned are high (e.g., 24 and 40), your connection is actively throttled.
+
+---
+
+### The Solution: Permanent Global Configuration
+
+This method configures BlueZ to apply high-performance parameters to all Bluetooth Low Energy (LE) devices globally upon connection.
+
+1. Open the global Bluetooth configuration file:
+   ```bash
+   sudo nano /etc/bluetooth/main.conf
+   ```
+
+2. Scroll down to the `[LE]` section.
+
+3. Find the default connection parameters (they are usually commented out with a `#`). Remove the `#` symbols and change the values to match this exactly:
+   ```ini
+   MinConnectionInterval=6
+   MaxConnectionInterval=6
+   ConnectionLatency=0
+   ConnectionSupervisionTimeout=216
+   ```
+   * **`6`** forces the absolute minimum **7.5ms** connection interval.
+   * **`ConnectionLatency=0`** prevents the device from skipping communication events to save power.
+   * **`ConnectionSupervisionTimeout=216`** prevents random disconnects under tight polling intervals.
+
+4. Save and exit (`Ctrl + O`, `Enter`, then `Ctrl + X`).
+
+5. Restart the Bluetooth service to apply changes:
+   ```bash
+   sudo systemctl restart bluetooth
+   ```
+
+6. **Power your controller off and back on** to re-establish the connection with the new high-performance profile.
+
+---
+
+### Verifying the Fix
+
+With your controller connected, re-run the diagnostic checks:
+```bash
+sudo cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
+sudo cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
+```
+
+If both values return **`6`**, your system is successfully polling the wireless controller at a crisp, lag-free **7.5ms interval**.
+
+---
+
+## Extra (Not Coneected with repo) 
+## Keyboard Backlight Control
+
+```bash
+echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
+```
+## Changing resolution in Niri
+
+In  ~/.config/niri/config.kdl
+
+```
+output "eDP-1" {
+    // Forces a custom 16:10 resolution matching your native screen shape
+    mode custom=true "1920x1200@59.990"
+
+    // Keeps it pixel-for-pixel sharp at this size
+    scale 1.19
+}
+
+```
+
+# Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification)
+
+This project provides a robust solution for switching Intel processor power ceilings (RAPL wattages) on Linux systems (specifically tested on MacBook Pro Mid-2014 running Debian/GNOME Shell). 
+
+By leveraging **Polkit (PolicyKit)**, this setup allows you to switch profiles natively using **Custom GUI Keyboard Shortcuts** seamlessly **without `sudo`** and **without password prompts**, while pushing elegant desktop notification toasts.
+
 # Linux RAPL Power Profiles Manager
 
 A lightweight utility and systemd service to manage Intel/AMD processor power ceilings on Linux using **Runtime Average Power Limiting (RAPL)** via `powercap`. Easily switch between **Performance**, **Balanced**, and **Powersave** profiles manually or automatically at boot and resume.
@@ -628,208 +777,3 @@ Now, typing a bare profile command executes passwordless automatically:
 ```bash
 powercap-profile powersave
 ```
-
-
-
-
-### 2. Battery & Core Tuning (Optional best smt )
-
-To reduce power consumption on 15" Quad-Core models or extend battery life on 13" models:
-
-1. Edit `/etc/default/grub`:
-```bash
-sudo nano /etc/default/grub
-
-```
-
-
-2. Add `maxcpus=6` (or desired core limit) to `GRUB_CMDLINE_LINUX_DEFAULT`:
-```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet splash maxcpus=6"
-
-```
-
-
-3. Update GRUB and reboot:
-```bash
-sudo update-grub
-sudo reboot
-
-```
-
-
-
----
-
-
-
-## 🔍 Hardware Troubleshooting
-
-* **Wi-Fi Not Detected After Reboot:**
-Check if the `wl` module is active or if conflicting drivers are loaded:
-```bash
-sudo modprobe -r b43 brcmfmac
-sudo modprobe wl
-
-```
-
-
-* **Camera Module Issues:**
-If the FaceTime HD camera fails to initialize, force unload and reload the module:
-```bash
-sudo modprobe -r facetimehd
-sudo modprobe facetimehd
-dmesg | grep -i facetimehd
-
-```
-
-
-# <<  Linux Bluetooth Controller Input Lag Fix  >>>>>>
-
-A clean guide to permanently fixing slow response rates, input lag, and frame drops for Bluetooth wireless controllers (Xbox, PlayStation, 8BitDo) running on Linux. This forces the kernel to poll the controller at its minimum allowable Bluetooth Low Energy (LE) interval: **6 (7.5ms)**.
-
-Bluetooth slow response time issue fix <<<<<
-
-By default, the Linux Bluetooth stack (BlueZ) often negotiates high, power-saving connection intervals for low-energy devices. A default configuration can set the connection intervals between **24 (30ms)** and **40 (50ms)**, resulting in noticeable latency during gaming. 
-
----
-
-### Quick Diagnostic
-
-Before making changes, check what your live kernel parameters are currently set to. Run the following commands while your controller is connected:
-
-```bash
-cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
-cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
-```
-*Note: If you receive a "No such file or directory" error, your Bluetooth adapter might be named `hci1`. Check using `ls /sys/kernel/debug/bluetooth/`.*
-
-If the numbers returned are high (e.g., 24 and 40), your connection is actively throttled.
-
----
-
-### The Solution: Permanent Global Configuration
-
-This method configures BlueZ to apply high-performance parameters to all Bluetooth Low Energy (LE) devices globally upon connection.
-
-1. Open the global Bluetooth configuration file:
-   ```bash
-   sudo nano /etc/bluetooth/main.conf
-   ```
-
-2. Scroll down to the `[LE]` section.
-
-3. Find the default connection parameters (they are usually commented out with a `#`). Remove the `#` symbols and change the values to match this exactly:
-   ```ini
-   MinConnectionInterval=6
-   MaxConnectionInterval=6
-   ConnectionLatency=0
-   ConnectionSupervisionTimeout=216
-   ```
-   * **`6`** forces the absolute minimum **7.5ms** connection interval.
-   * **`ConnectionLatency=0`** prevents the device from skipping communication events to save power.
-   * **`ConnectionSupervisionTimeout=216`** prevents random disconnects under tight polling intervals.
-
-4. Save and exit (`Ctrl + O`, `Enter`, then `Ctrl + X`).
-
-5. Restart the Bluetooth service to apply changes:
-   ```bash
-   sudo systemctl restart bluetooth
-   ```
-
-6. **Power your controller off and back on** to re-establish the connection with the new high-performance profile.
-
----
-
-### Verifying the Fix
-
-With your controller connected, re-run the diagnostic checks:
-```bash
-sudo cat /sys/kernel/debug/bluetooth/hci0/conn_min_interval
-sudo cat /sys/kernel/debug/bluetooth/hci0/conn_max_interval
-```
-
-If both values return **`6`**, your system is successfully polling the wireless controller at a crisp, lag-free **7.5ms interval**.
-
----
-
-## Extra (Not Coneected with repo) 
-## Keyboard Backlight Control
-
-```bash
-echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
-```
-## Changing resolution in Niri
-
-In  ~/.config/niri/config.kdl
-
-```
-output "eDP-1" {
-    // Forces a custom 16:10 resolution matching your native screen shape
-    mode custom=true "1920x1200@59.990"
-
-    // Keeps it pixel-for-pixel sharp at this size
-    scale 1.19
-}
-
-```
-
-# Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification)
-
-This project provides a robust solution for switching Intel processor power ceilings (RAPL wattages) on Linux systems (specifically tested on MacBook Pro Mid-2014 running Debian/GNOME Shell). 
-
-By leveraging **Polkit (PolicyKit)**, this setup allows you to switch profiles natively using **Custom GUI Keyboard Shortcuts** seamlessly **without `sudo`** and **without password prompts**, while pushing elegant desktop notification toasts.
-
----
-
-## 🚀 Setup Instructions
-
-### 1. Deploy the Management Script
-This master script handles the hardware register limits via `powercap-set` and safely bridges root permissions back to user-space to display desktop notifications.
-
-Run the following block directly in your terminal to create the script securely:
-
-```bash
-sudo tee /usr/local/bin/powercap-profilesudo tee /usr/local/bin/powercap-profile << 'EOF'
-#!/bin/bash
-# Ensure the RAPL module is loaded
-/sbin/modprobe intel_rapl_msr 2>/dev/null
-sleep 2
-
-# Helper function to send desktop notifications from root back to your user session (tausif)
-send_notification() {
-    local title="$1"
-    local message="$2"
-    local icon="$3"
-    # Sends the pop-up notification directly to your graphical desktop interface
-    sudo -u tausif DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send "$title" "$message" -i "$icon" -t 3000
-}
-
-case "$1" in
-    performance)
-        echo "Applying Performance Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 45000000
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 54000000
-        send_notification "Power Manager" "🚀 Performance Profile Applied (45W/54W)" "power-profile-performance"
-        ;;
-    powersave)
-        echo "Applying Powersave Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 15000000
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 20000000
-        send_notification "Power Manager" "🔋 Powersave Profile Applied (15W/20W)" "power-profile-powersave"
-        ;;
-    balanced)
-        echo "Applying Balanced Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 27777777
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 31999999
-        send_notification "Power Manager" "⚖️ Balanced Profile Applied (28W/32W)" "power-profile-balanced"
-        ;;
-    *)
-        echo "Usage: $0 {performance|powersave|balanced}"
-        exit 1
-        ;;
-esac
-EOF
-```
-
----
