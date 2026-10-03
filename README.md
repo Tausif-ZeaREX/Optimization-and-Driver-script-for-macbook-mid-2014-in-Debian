@@ -254,7 +254,6 @@ cat /sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input
 
 ---
 
-```markdown
 # ⚡ Disabling Hyper-Threading (`nosmt`) on Intel Haswell Linux
 
 A practical guide to disabling Simultaneous Multithreading (SMT / Hyper-Threading) on Intel Haswell CPUs (**Core i7-4770HQ / MacBook Pro 11,2**) using the `nosmt` kernel parameter on Debian Linux.
@@ -272,7 +271,7 @@ The Intel Core i7-4770HQ is a **4-core, 8-thread** processor. Disabling SMT lock
 
 ---
 
-# ⚙️ How to Apply `nosmt` in GRUB
+## ⚙️ How to Apply `nosmt` in GRUB
 
 ### 1. Edit GRUB Configuration
 
