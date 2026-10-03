@@ -565,7 +565,8 @@ output "eDP-1" {
 
 ```
 
-# Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification)
+# Linux RAPL Power Profiles Manager (Passwordless Keyboard Shortcuts with notification) (⚠️ Not mandatory if you want more tweak and know how to do it ⚠️)
+
 
 This project provides a robust solution for switching Intel processor power ceilings (RAPL wattages) on Linux systems (specifically tested on MacBook Pro Mid-2014 running Debian/GNOME Shell). 
 
