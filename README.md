@@ -62,6 +62,98 @@ chmod +x install.sh
 
 ## ⚙️ Post-Installation Setup
 
+```markdown
+# 🚀 Haswell MacBook Pro 11,2 Debian Linux Optimization Guide
+
+A performance, thermal, and power tuning setup for running **Debian Linux** on the **Mid-2014 15-inch Apple MacBook Pro (MacBookPro11,2)** equipped with the **Intel Core i7-4770HQ** and **Iris Pro Graphics 5200 (GT3e)**.
+
+This repository/guide provides optimized configurations for `intel_pstate`, `auto-cpufreq`, GRUB parameters, and thermal power balancing—specifically tuned to maximize iGPU graphics performance while keeping CPU thermals low.
+
+---
+
+## 💻 Hardware Overview
+
+* **Device:** Apple MacBook Pro 15-inch (Mid 2014 / MacBookPro11,2)
+* **CPU:** Intel Core i7-4770HQ @ 2.20GHz (4 Cores / 8 Threads, Haswell)
+* **iGPU:** Intel Iris Pro Graphics 5200 (GT3e with 128MB eDRAM sidecar)
+* **Package TDP:** 47W shared between CPU and iGPU
+* **OS:** Debian Linux (Trixie / Testing or Stable)
+
+---
+
+## 🎯 Optimization Goal
+
+The Haswell 47W TDP budget is shared between the CPU cores and the Iris Pro GT3e iGPU. Uncapped CPU Turbo Boost can pull **28W–35W+**, forcing the iGPU to throttle down to **~900 MHz** during gaming or heavy 3D workloads.
+
+By enforcing strict base-clock limits (2.2 GHz), disabling Hyper-Threading (`nosmt`), and setting Energy Performance Bias (EPB) to `power`, we lock CPU power draw to **~10W–12W**. This leaves **~35W of headroom** for the Iris Pro iGPU to sustain its maximum **1200 MHz** clock without thermal or power-limit throttling.
+
+---
+
+## ⚙️ Configuration Files
+
+### 1. `/etc/default/grub`
+
+Update your GRUB configuration to force `intel_pstate=active` and disable Hyper-Threading (`nosmt`) for better single-core efficiency and lower thermal output.
+
+```ini
+GRUB_DEFAULT=0
+GRUB_DISTRIBUTOR='Debian'
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nosmt intel_pstate=active resume=UUID=YOUR_SWAP_UUID_HERE"
+GRUB_CMDLINE_LINUX=""
+
+```
+
+> ⚠️ **Note:** Replace `YOUR_SWAP_UUID_HERE` with your actual swap partition UUID using `lsblk -f` or `sudo blkid | grep -i swap`.
+
+After editing, apply changes:
+
+```bash
+sudo update-grub
+
+```
+
+---
+
+### 2. `/etc/auto-cpufreq.conf`
+
+`auto-cpufreq` manages dynamic power states while respecting hardware limits via `intel_pstate=active`.
+
+```ini
+[charger]
+governor = powersave
+energy_perf_bias = power
+turbo = never
+
+[battery]
+governor = powersave
+energy_perf_bias = power
+turbo = never
+
+```
+
+Apply and restart the service:
+
+```bash
+sudo systemctl restart auto-cpufreq
+
+```
+
+---
+
+## 📊 Summary of `intel_pstate` Driver Modes
+
+| Feature / Behavior | `intel_pstate=disabled` | `intel_pstate=passive` | `intel_pstate=active` **(Recommended)** |
+| --- | --- | --- | --- |
+| **Driver Used** | `acpi-cpufreq` | `intel_cpufreq` | `intel_pstate` |
+| **Scaling Control** | Software OS governor | Kernel governor / HWP | Integrated Hardware PCU + OS hints |
+| **Max Freq Cap** | Software enforced | ❌ Ignored by Turbo | ✅ **Strict hard cap at 2.2 GHz** |
+| **`auto-cpufreq` Support** | Poor | Broken | ✅ **100% Native Support** |
+| **EPB (Voltage Control)** | Unavailable | Ignored by HW | ✅ **Fully Functional (`15` / `power`)** |
+| **Power Balance** | Inefficient | CPU spikes to 3.2 GHz | ✅ **Perfect (CPU ~11W, iGPU ~36W)** |
+
+---
+
+
 ### 1. Intel RAPL CPU Powercap Service
 
 Haswell MacBook Pros tend to run hot under Linux default power governors. To cap power usage (28W limit for 13" / 35W limit for 15"):
