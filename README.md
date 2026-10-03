@@ -62,7 +62,6 @@ chmod +x install.sh
 
 ## ⚙️ Post-Installation Setup
 
-```markdown
 # 🚀 Haswell MacBook Pro 11,2 Debian Linux Optimization Guide
 
 A performance, thermal, and power tuning setup for running **Debian Linux** on the **Mid-2014 15-inch Apple MacBook Pro (MacBookPro11,2)** equipped with the **Intel Core i7-4770HQ** and **Iris Pro Graphics 5200 (GT3e)**.
