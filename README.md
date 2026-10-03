@@ -62,23 +62,7 @@ chmod +x install.sh
 
 ## ⚙️ Post-Installation Setup
 
-# 🚀 Haswell MacBook Pro 11,2 Debian Linux Optimization Guide
-
-A performance, thermal, and power tuning setup for running **Debian Linux** on the **Mid-2014 15-inch Apple MacBook Pro (MacBookPro11,2)** equipped with the **Intel Core i7-4770HQ** and **Iris Pro Graphics 5200 (GT3e)**.
-
-This repository/guide provides optimized configurations for `intel_pstate`, `auto-cpufreq`, GRUB parameters, and thermal power balancing—specifically tuned to maximize iGPU graphics performance while keeping CPU thermals low.
-
----
-
-## 💻 Hardware Overview
-
-* **Device:** Apple MacBook Pro 15-inch (Mid 2014 / MacBookPro11,2)
-* **CPU:** Intel Core i7-4770HQ @ 2.20GHz (4 Cores / 8 Threads, Haswell)
-* **iGPU:** Intel Iris Pro Graphics 5200 (GT3e with 128MB eDRAM sidecar)
-* **Package TDP:** 47W shared between CPU and iGPU
-* **OS:** Debian Linux (Trixie / Testing or Stable)
-
----
+# 🚀  AutoCpufreq configuration
 
 ## 🎯 Optimization Goal
 
