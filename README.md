@@ -153,7 +153,7 @@ sudo systemctl restart auto-cpufreq
 ---
 
 
-### 1. Intel RAPL CPU Powercap Service
+# 1. Intel RAPL CPU Powercap Service
 
 Haswell MacBook Pros tend to run hot under Linux default power governors. To cap power usage (28W limit for 13" / 35W limit for 15"):
 
