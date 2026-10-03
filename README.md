@@ -254,8 +254,148 @@ cat /sys/devices/platform/coretemp.0/hwmon/hwmon*/temp1_input
 
 ---
 
+```markdown
+# ⚡ Disabling Hyper-Threading (`nosmt`) on Intel Haswell Linux
+
+A practical guide to disabling Simultaneous Multithreading (SMT / Hyper-Threading) on Intel Haswell CPUs (**Core i7-4770HQ / MacBook Pro 11,2**) using the `nosmt` kernel parameter on Debian Linux.
+
+---
+
+## 💡 Why Disable SMT (`nosmt`) on Haswell?
+
+The Intel Core i7-4770HQ is a **4-core, 8-thread** processor. Disabling SMT locks the CPU to **4 physical cores (4 threads)**. For shared TDP systems (like MacBooks with Integrated Iris Pro Graphics), this yields several key benefits:
+
+* **Lower CPU Power Draw:** Eliminates thread scheduling overhead and speculative execution execution pipelines, reducing CPU package power draw by **~3W–5W**.
+* **More Headroom for iGPU:** On a shared 47W TDP envelope, saving CPU power frees up wattage directly for the Iris Pro 5200 (GT3e) GPU to maintain max clock speeds (1200 MHz).
+* **Lower Thermals & Noise:** Fewer active logical pipelines keep overall chip temperatures lower, preventing thermal throttling and keeping fan speeds lower under load.
+* **Mitigates CPU Vulnerabilities:** Hardware mitigation for Spectre, Meltdown, and MDS-related side-channel attacks that target shared SMT execution resources.
+
+---
+
+# ⚙️ How to Apply `nosmt` in GRUB
+
+### 1. Edit GRUB Configuration
+
+Open `/etc/default/grub` in a text editor:
+
+```bash
+sudo nano /etc/default/grub
+
+```
+
+Locate `GRUB_CMDLINE_LINUX_DEFAULT` and add `nosmt` to the line:
+
+```ini
+GRUB_DEFAULT=0
+GRUB_DISTRIBUTOR='Debian'
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nosmt intel_pstate=active resume=UUID=YOUR_SWAP_UUID_HERE"
+GRUB_CMDLINE_LINUX=""
+
+```
+
+> ⚠️ **Note:** Replace `YOUR_SWAP_UUID_HERE` with your actual swap partition UUID (find it using `sudo blkid | grep -i swap`).
+
+---
+
+### 2. Update GRUB & Reboot
+
+Save the file (`Ctrl+O`, `Enter`, then `Ctrl+X`) and update GRUB:
+
+```bash
+sudo update-grub
+
+```
+
+Reboot your system to apply the kernel parameter:
+
+```bash
+sudo reboot
+
+```
+
+---
+
+## 🔍 How to Verify `nosmt` is Active
+
+After rebooting, verify that SMT is disabled using any of these commands:
+
+### Method 1: Check Kernel Boot Parameters
+
+```bash
+cat /proc/cmdline
+
+```
+
+*Look for `nosmt` in the output string.*
+
+---
+
+### Method 2: Check Active Thread Count per Core
+
+```bash
+lscpu | grep -E "Thread\(s\) per core|CPU\(s\):"
+
+```
+
+**Expected Output with `nosmt`:**
+
+```text
+CPU(s):              4
+Thread(s) per core:  1
+
+```
+
+*(Without `nosmt`, `Thread(s) per core` would be `2` and `CPU(s)` would be `8`).*
+
+---
+
+### Method 3: Check Sysfs SMT Control Interface
+
+```bash
+cat /sys/devices/system/cpu/smt/control
+
+```
+
+**Expected Output:**
+
+```text
+disabled
+
+```
+
+*(If it outputs `forceoff` or `disabled`, SMT is successfully disabled at the hardware level).*
+
+---
+
+## 🔄 Dynamic SMT Toggling (Without Rebooting)
+
+If you ever need to re-enable or disable SMT on the fly without changing GRUB:
+
+* **Disable SMT:**
+```bash
+echo off | sudo tee /sys/devices/system/cpu/smt/control
+
+```
 
 
+* **Enable SMT:**
+```bash
+echo on | sudo tee /sys/devices/system/cpu/smt/control
+
+```
+
+---
+
+## 📊 Summary
+
+| Metric | With Hyper-Threading (SMT On) | With `nosmt` (SMT Off) |
+| --- | --- | --- |
+| **Logical Cores** | 8 Threads | **4 Threads (Physical Cores Only)** |
+| **Idle/Load CPU Power** | Higher (~15W–18W) | **Lower (~10W–12W)** |
+| **Thermal Profile** | Warmer | **Cooler (~4°C–8°C drop under load)** |
+| **iGPU TDP Allocation** | Lower | **Higher (~35W available for iGPU)** |
+
+---
 
 
 # 1. Intel RAPL CPU Powercap Service (Not mandatory if you want more tweak and know how to do it)
