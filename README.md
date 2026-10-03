@@ -397,7 +397,7 @@ echo on | sudo tee /sys/devices/system/cpu/smt/control
 ---
 
 
-# 1. Intel RAPL CPU Powercap Service (Not mandatory if you want more tweak and know how to do it)
+# 1. Intel RAPL CPU Powercap Service (⚠️ Not mandatory if you want more tweak and know how to do it ⚠️)
 
 Haswell MacBook Pros tend to run hot under Linux default power governors. To cap power usage (28W limit for 13" / 35W limit for 15"):
 
