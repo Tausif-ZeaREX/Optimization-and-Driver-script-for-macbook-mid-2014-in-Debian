@@ -154,10 +154,6 @@ sudo systemctl restart auto-cpufreq
 
 # Macfanctl Configuration for MacBook Pro (Mid 2014, iGPU-Only)
 
-[![Linux](https://shields.io)](https://kernel.org)
-[![Hardware](https://shields.io)](https://apple.com)
-[![License: MIT](https://shields.io)](https://opensource.org)
-
 An optimized thermal profile and deployment guide for running the `macfanctld` daemon on a **Mid 2014 MacBook Pro** with **Intel Integrated Graphics (iGPU)** under Linux. 
 
 Intel Haswell laptop architectures run notably warm under modern Wayland environments (such as `niri`). This profile focuses on aggressive, proactive thermal curve responses while isolating non-existent dedicated GPU hardware sensors to eliminate daemon errors.
