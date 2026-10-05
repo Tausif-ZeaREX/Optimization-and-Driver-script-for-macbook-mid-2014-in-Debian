@@ -564,6 +564,95 @@ output "eDP-1" {
 }
 
 ```
+
+
+# Bluetooth LE First-Connect Low Latency Fix
+
+Fixes the first-connection input lag (30–50ms) on Bluetooth LE gamepads under Linux by forcing an immediate connection interval update (7.5ms) without requiring a disconnect/reconnect cycle.
+
+---
+
+## The Problem
+
+`ACTION=add` udev events fire before the kernel instantiates the active L2CAP connection handle. Updating `sysfs` (`conn_min_interval`) only affects **future** connections or renegotiations. Sending an explicit `LE Connection Update` (`hcitool lecup`) directly to the HCI controller forces the interval down to 7.5ms on the first connection.
+
+---
+
+## Installation
+
+### 1. Create the Systemd Service File
+
+Open `/etc/systemd/system/bt-low-latency.service`:
+
+```bash
+sudo nano /etc/systemd/system/bt-low-latency.service
+
+```
+
+Paste the following configuration:
+
+```ini
+[Unit]
+Description=Universal Bluetooth LE Instant Low Latency Enforcer
+After=bluetooth.service
+Wants=bluetooth.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c '\
+  apply_hci_defaults() { \
+    for d in /sys/kernel/debug/bluetooth/hci*; do \
+      if [ -d "$d" ]; then \
+        echo 6 > "$d/conn_min_interval" 2>/dev/null; \
+        echo 6 > "$d/conn_max_interval" 2>/dev/null; \
+        echo 0 > "$d/conn_latency" 2>/dev/null; \
+        echo 216 > "$d/supervision_timeout" 2>/dev/null; \
+      fi; \
+    done; \
+  }; \
+  force_active_handle() { \
+    hcitool con 2>/dev/null | grep -i "LE" | awk "{print \$5}" | while read -r handle; do \
+      if [ -n "$handle" ]; then \
+        hcitool lecup --handle "$handle" --min 6 --max 6 --latency 0 --timeout 216 2>/dev/null; \
+      fi; \
+    done; \
+  }; \
+  apply_hci_defaults; \
+  udevadm monitor --subsystem-match=bluetooth --property | while read -r line; do \
+    if echo "$line" | grep -q "ACTION="; then \
+      apply_hci_defaults; \
+      (sleep 0.5 && force_active_handle) & \
+      (sleep 1.5 && force_active_handle) & \
+    fi; \
+  done'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+### 2. Enable and Start the Service
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now bt-low-latency.service
+
+```
+
+---
+
+## How It Works
+
+1. **Preset Kernel Parameters:** Pre-configures HCI defaults to target a 7.5ms interval (value `6`).
+2. **Monitor Connections:** Listens for Bluetooth events using `udevadm`.
+3. **Forced Interval Update:** Waits 500ms and 1500ms post-connection for service enumeration to complete, then executes `hcitool lecup` on the active handle to override the connection parameters immediately.
+
+```
+
+```
+
 # 🎞️ Wallpaper Carousel tuning
 //Border width: 20px, Item width:169px, Item height:554px ,Center tile zomm : 111% ,Expansion Amount : 217, cache size : 48
 
