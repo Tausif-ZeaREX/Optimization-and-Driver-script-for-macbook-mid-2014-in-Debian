@@ -565,12 +565,7 @@ output "eDP-1" {
 
 ```
 # 🎞️ Wallpaper Carousel tuning
-//Border width: 20px
-//Item width:169px
-//Item height:554px
-//Center tile zomm : 111%
-//Expansion Amount : 217
-//cache size : 48
+//Border width: 20px, Item width:169px, Item height:554px ,Center tile zomm : 111% ,Expansion Amount : 217, cache size : 48
 
 key bind in niri
 
