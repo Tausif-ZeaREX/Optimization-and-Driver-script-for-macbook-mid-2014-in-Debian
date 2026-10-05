@@ -564,6 +564,26 @@ output "eDP-1" {
 }
 
 ```
+# 🎞️ Wallpaper Carousel tuning
+Border width: 20px
+Item width:169px
+Item height:554px
+Center tile zomm : 111%
+Expansion Amount : 217
+cache size : 48
+
+key bind in niri
+
+```
+binds {
+    // DankMaterialShell
+    Mod+W { spawn "dms" "ipc" "wallpaperCarousel" "toggle"; }
+    Alt+Shift+Right { spawn "dms" "ipc" "wallpaperCarousel" "cycleNext"; }
+    Alt+Shift+Left { spawn "dms" "ipc" "wallpaperCarousel" "cyclePrevious"; }
+}
+```
+
+
 # 🎞️ anifetch-bashrc
 
 Animated GIF + system info in your terminal every time you open it, powered by [anifetch](https://github.com/Notenlish/anifetch).
