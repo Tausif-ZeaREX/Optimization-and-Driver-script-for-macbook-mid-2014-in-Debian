@@ -1,0 +1,76 @@
+# Generated from layout.yaml. All numeric geometry is supplied by the validated ledger.
+# Sidonia T4 1440p; fixed 2560x1440 canvas centred on larger framebuffers
+title-text: ""
+desktop-color: "#000000"
+
++ boot_menu {
+  id = "__menu__"
+  left = 50%-525
+  top = 50%-322
+  width = 1529
+  height = 640
+  item_font = "Sidonia T4 Mono 1440p Regular 38"
+  selected_item_font = "Sidonia T4 Mono 1440p Regular 38"
+  item_color = "#FFFFFF"
+  selected_item_color = "#000000"
+  item_height = 200
+  item_padding = 0
+  item_spacing = -54
+  icon_width = 0
+  icon_height = 0
+  item_icon_space = 59
+  menu_pixmap_style = "selectors/menu_*.png"
+  selected_item_pixmap_style = "selectors/runtime_selected_*.png"
+  scrollbar = true
+  scrollbar_width = 9
+  scrollbar_frame = "selectors/scrollbar_*.png"
+  scrollbar_thumb = "selectors/thumb_*.png"
+  scrollbar_thumb_overlay = true
+  scrollbar_slice = east
+  scrollbar_left_pad = 0
+  scrollbar_right_pad = 0
+  scrollbar_top_pad = 0
+  scrollbar_bottom_pad = 0
+}
+
++ label {
+  id = "__timeout__"
+  left = 50%-74
+  top = 50%-651
+  width = 96
+  height = 46
+  text = "T-%02d"
+  font = "Sidonia T4 Mono 1440p Regular 38"
+  color = "#FF0000"
+  align = "left"
+}
+
++ image {
+  left = 50%-82
+  top = 50%-656
+  width = 112
+  height = 56
+  file = "progress/timer_base.png"
+}
+
++ progress_bar {
+  id = "__timeout__"
+  left = 50%+725
+  top = 50%-626
+  width = 200
+  height = 28
+  bar_style = "progress/highlight_*.png"
+  highlight_style = "progress/frame_*.png"
+  highlight_overlay = true
+  fg_color = "#000000"
+  bg_color = "#D51F1D"
+}
+
+# GRUB paints components in reverse declaration order; keep the canvas last.
++ image {
+  left = 50%-1280
+  top = 50%-720
+  width = 2560
+  height = 1440
+  file = "background.png"
+}

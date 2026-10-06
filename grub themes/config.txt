@@ -1,0 +1,12 @@
+In /etc/default/grub
+
+
+GRUB_TIMEOUT_STYLE="menu"
+GRUB_TIMEOUT="60"
+GRUB_FONT="/boot/grub/fonts/anurati48.pf2"
+GRUB_THEME="/boot/grub/themes/1080p/theme.txt"
+GRUB_GFXMODE="auto"
+
+Font chnaging example
+
+sudo grub-mkfont --output=/boot/grub/fonts/anurati48.pf2 --size=48 /home/tausif/Downloads/anurati-font/anurati-regular.otf

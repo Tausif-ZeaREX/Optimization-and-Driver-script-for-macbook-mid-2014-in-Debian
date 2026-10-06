@@ -1,0 +1,69 @@
+# Generated from layout.yaml. All numeric geometry is supplied by the validated ledger.
+# Sidonia T4 1080p; exact framebuffer 1920x1080
+title-text: ""
+desktop-color: "#000000"
+desktop-image: "background.png"
+desktop-image-scale-method: "stretch"
+
++ boot_menu {
+  id = "__menu__"
+  left = 566
+  top = 298
+  width = 1147
+  height = 480
+  item_font = "Sidonia T4 Mono 1080p Regular 28"
+  selected_item_font = "Sidonia T4 Mono 1080p Regular 28"
+  item_color = "#FFFFFF"
+  selected_item_color = "#000000"
+  item_height = 150
+  item_padding = 0
+  item_spacing = -40
+  icon_width = 0
+  icon_height = 0
+  item_icon_space = 44
+  menu_pixmap_style = "selectors/menu_*.png"
+  selected_item_pixmap_style = "selectors/runtime_selected_*.png"
+  scrollbar = true
+  scrollbar_width = 7
+  scrollbar_frame = "selectors/scrollbar_*.png"
+  scrollbar_thumb = "selectors/thumb_*.png"
+  scrollbar_thumb_overlay = true
+  scrollbar_slice = east
+  scrollbar_left_pad = 0
+  scrollbar_right_pad = 0
+  scrollbar_top_pad = 0
+  scrollbar_bottom_pad = 0
+}
+
++ label {
+  id = "__timeout__"
+  left = 904
+  top = 53
+  width = 72
+  height = 34
+  text = "T-%02d"
+  font = "Sidonia T4 Mono 1080p Regular 28"
+  color = "#FF0000"
+  align = "left"
+}
+
++ image {
+  left = 899
+  top = 48
+  width = 84
+  height = 42
+  file = "progress/timer_base.png"
+}
+
++ progress_bar {
+  id = "__timeout__"
+  left = 1479
+  top = 70
+  width = 200
+  height = 28
+  bar_style = "progress/highlight_*.png"
+  highlight_style = "progress/frame_*.png"
+  highlight_overlay = true
+  fg_color = "#000000"
+  bg_color = "#D51F1D"
+}
