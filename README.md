@@ -568,17 +568,7 @@ Works seamlessly across both **Intel Macs** and **Apple Silicon Macs** (M1/M2/M3
 
 ---
 
-## 🚀 Quick Installation
-
-Run the following automated one-liner in your terminal:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh | bash
-```
-
-*(Alternatively, follow the manual installation steps below)*
-
-### Manual Installation
+## Manual Installation
 
 1. **Download and create the script:**
 
