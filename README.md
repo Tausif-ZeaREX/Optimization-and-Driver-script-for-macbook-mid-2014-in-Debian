@@ -550,6 +550,141 @@ If both values return **`6`**, your system is successfully polling the wireless 
 ```bash
 echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
 ```
+# ⌨️ Mac Keyboard Backlight Control for Linux
+
+A lightweight CLI tool and utility script to control Apple MacBook keyboard backlight brightness in Linux using percentage-based adjustments (e.g., `+3%`, `-3%`, or specific target values). 
+
+Works seamlessly across both **Intel Macs** and **Apple Silicon Macs** (M1/M2/M3 via Asahi Linux).
+
+---
+
+## ✨ Features
+
+- 📈 **Relative Percentage Adjustments:** Easily increase or decrease brightness using simple syntax like `+3%` or `-3%`.
+- 🎯 **Direct Percentage Setting:** Set the brightness directly (e.g., `50%`, `100%`, `0%`).
+- 🤖 **Auto-Detection:** Automatically detects whether you are using an Intel Mac driver (`smc::kbd_backlight`) or Apple Silicon (`kbd_backlight`).
+- 🔒 **Passwordless Execution:** Configurable `sudoers` rule so you don't need to type a password on every adjustment.
+- ⚡ **Zero External Dependencies:** Built purely with Linux standard tools and standard Bash.
+
+---
+
+## 🚀 Quick Installation
+
+Run the following automated one-liner in your terminal:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh | bash
+```
+
+*(Alternatively, follow the manual installation steps below)*
+
+### Manual Installation
+
+1. **Download and create the script:**
+
+   ```bash
+   sudo bash -c 'cat << "EOF" > /usr/local/bin/kbd-light
+   #!/usr/bin/env bash
+
+   # Automatically locate keyboard backlight path
+   SYS_PATH=$(ls -d /sys/class/leds/*kbd_backlight 2>/dev/null | head -n 1)
+
+   if [ -z "$SYS_PATH" ]; then
+       echo "Error: Keyboard backlight interface not found." >&2
+       exit 1
+   fi
+
+   MAX=$(cat "$SYS_PATH/max_brightness")
+   CURR=$(cat "$SYS_PATH/brightness")
+
+   if [ -z "$1" ]; then
+       PERCENT=$(( CURR * 100 / MAX ))
+       echo "Current brightness: ${PERCENT}% (${CURR}/${MAX})"
+       exit 0
+   fi
+
+   ARG="$1"
+
+   # Calculate step size based on percentage parameter
+   if [[ "$ARG" =~ ^\+([0-9]+)%$ ]]; then
+       STEP_PERCENT="${BASH_REMATCH[1]}"
+       DELTA=$(( (MAX * STEP_PERCENT + 50) / 100 ))
+       NEW=$(( CURR + DELTA ))
+   elif [[ "$ARG" =~ ^-([0-9]+)%$ ]]; then
+       STEP_PERCENT="${BASH_REMATCH[1]}"
+       DELTA=$(( (MAX * STEP_PERCENT + 50) / 100 ))
+       NEW=$(( CURR - DELTA ))
+   elif [[ "$ARG" =~ ^([0-9]+)%$ ]]; then
+       STEP_PERCENT="${BASH_REMATCH[1]}"
+       NEW=$(( (MAX * STEP_PERCENT + 50) / 100 ))
+   else
+       echo "Usage: kbd-light [+N% | -N% | N%]" >&2
+       echo "Examples: kbd-light +3%  |  kbd-light -3%  |  kbd-light 50%" >&2
+       exit 1
+   fi
+
+   # Clamp value within [0, MAX] range
+   if [ "$NEW" -gt "$MAX" ]; then NEW="$MAX"; fi
+   if [ "$NEW" -lt 0 ]; then NEW=0; fi
+
+   echo "$NEW" | tee "$SYS_PATH/brightness" >/dev/null
+   PERCENT=$(( NEW * 100 / MAX ))
+   echo "Keyboard brightness set to ${PERCENT}% (${NEW}/${MAX})"
+   EOF'
+
+   sudo chmod +x /usr/local/bin/kbd-light
+   ```
+
+2. **Allow passwordless execution (Recommended):**
+
+   Grant permissions to write to the system interface without requiring `sudo` passwords each time:
+
+   ```bash
+   echo "$USER ALL=(ALL) NOPASSWD: /usr/local/bin/kbd-light" | sudo tee /etc/sudoers.d/kbd-light
+   sudo chmod 0440 /etc/sudoers.d/kbd-light
+   ```
+
+3. **Set up shell alias:**
+
+   Add an alias in your shell configuration (`~/.bashrc`, `~/.zshrc`, etc.):
+
+   ```bash
+   echo "alias kbd-light='sudo /usr/local/bin/kbd-light'" >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+---
+
+## 📖 Usage Examples
+
+```bash
+# Increase brightness by 3%
+kbd-light +3%
+
+# Decrease brightness by 3%
+kbd-light -3%
+
+# Set brightness directly to 50%
+kbd-light 50%
+
+# Turn off keyboard backlight completely
+kbd-light 0%
+
+# View current backlight status
+kbd-light
+```
+
+---
+
+## ⌨️ Desktop Shortcuts & Keybindings
+
+You can map this utility to hotkeys or function keys in your window manager or desktop environment (GNOME, KDE, i3, Hyprland, Sway, etc.):
+
+- **Increase Backlight:** `kbd-light +3%`
+- **Decrease Backlight:** `kbd-light -3%`
+
+---
+
 ## Changing resolution in Niri
 
 In  ~/.config/niri/config.kdl
