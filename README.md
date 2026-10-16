@@ -544,13 +544,13 @@ If both values return **`6`**, your system is successfully polling the wireless 
 
 ---
 
-## Extra (Not Coneected with repo) 
+# Extra (Not Coneected with repo) 
 ## Keyboard Backlight Control
 
 ```bash
 echo 0 | sudo tee /sys/class/leds/smc::kbd_backlight/brightness
 ```
-# ⌨️ Mac Keyboard Backlight Control for Linux
+## ⌨️ Mac Keyboard Backlight Control for Linux
 
 A lightweight CLI tool and utility script to control Apple MacBook keyboard backlight brightness in Linux using percentage-based adjustments (e.g., `+3%`, `-3%`, or specific target values). 
 
@@ -689,7 +689,8 @@ output "eDP-1" {
 }
 
 ```
-
+## Changing Gamma in DMS
+Gamma 0.85 and Contrast 115
 
 # Bluetooth LE First-Connect Low Latency Fix
 
