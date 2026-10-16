@@ -830,7 +830,7 @@ source ~/.bashrc
 * `--symbols wide`: Chafa symbol style
 * `--fg-only`: foreground colors only
 
-## 🙏 Credits
+## Credits
 
 [anifetch](https://github.com/Notenlish/anifetch) by Notenlish
 
