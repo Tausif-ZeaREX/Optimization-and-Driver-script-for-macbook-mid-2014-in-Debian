@@ -5,9 +5,29 @@ FILE="/etc/apt/sources.list"
 
 echo ""
 echo "==================================================================================================================="
-echo "Note:!!!!!!  Tested and confirmed working on Debian 13 (Trixie). Compatibility with Ubuntu or other Debian derivatives is not guaranteed. !!!!!!!!!!!"
+echo "Note:!!!!!!  Tested and confirmed working on Debian 13 (Trixie). Compatibility with Ubuntu or 
+                       other Debian derivatives is not guaranteed. !!!!!!!!!!!"
 echo "==================================================================================================================="
-echo ""
+
+echo "
+          ,,,,  sudo nano  /etc/apt/sources.list FIX ,,,,,,
+
+ # See https://wiki.debian.org/SourcesList for more information.
+
+# Main Trixie Repositories
+deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+
+# Trixie Updates (formerly volatile)
+deb http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+
+# Debian Security Repositories
+deb http://security.debian.org/debian-security/ trixie-security main contrib non-free non-free-firmware
+deb-src http://security.debian.org/debian-security/ trixie-security main contrib non-free non-free-firmware 
+
+            ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"
 
 # Confirmation dialogue
 read -p "Do you want to proceed with the installation? (y/N): " choice
@@ -26,9 +46,7 @@ if [ ! -f "$FILE" ]; then
     echo "Error: $FILE not found."
     exit 1
 fi
-
-# Run sed with a condition: only match 'non-free-firmware' if NOT followed by 'contrib' or 'non-free'
-sudo sed -i -E '/contrib|non-free/!s/non-free-firmware/non-free-firmware contrib non-free/g' "$FILE"
+  
 echo ""
 echo ""
 echo "APT sources updated safely without duplications.       /etc/apt/sources.list"

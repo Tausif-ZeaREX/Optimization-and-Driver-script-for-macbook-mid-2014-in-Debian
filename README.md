@@ -925,6 +925,7 @@ WantedBy=multi-user.target suspend.target hibernate.target hybrid-sleep.target s
 *Note: To change your default system-wide startup profile, change `balanced` at the end of the `ExecStart` line to `powersave` or `performance`.*
 
 ### 4. Enable and Activate
+
 Reload systemd configurations, enable the service triggers, and fire it up manually:
 ```bash
 sudo systemctl daemon-reload
@@ -937,6 +938,10 @@ sudo systemctl start powercap-limit.service
 ## 🕹️ Usage
 
 ### Manual Switching
+ Also install must !!!!!!!!
+ ```bash
+ sudo apt install libnotify-bin -y
+ ```
 You can manually switch between profiles at any time via the terminal:
 
 * 🚀 **Performance:** `sudo powercap-profile performance`
