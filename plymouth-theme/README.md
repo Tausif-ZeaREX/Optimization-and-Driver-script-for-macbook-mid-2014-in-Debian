@@ -75,6 +75,12 @@ sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth d
 sudo update-alternatives --config default.plymouth
 #(select the number for installed theme, angular in this case)
 
+#If you want a specific one instead, list them first:
+sudo plymouth-set-default-theme -l
+
+#That will show you options like spinner, solar, glow, fade-in, spinfinity, text, etc. Then pick one:
+sudo plymouth-set-default-theme -R hexagon_dots
+
 # update initramfs
 sudo update-initramfs -u
 ``` 
