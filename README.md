@@ -947,26 +947,30 @@ send_notification() {
 }
 
 case "$1" in
-    performance)
-        echo "Applying Performance Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 45999999
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 47111111
-        send_notification "Power Manager" "🚀 Performance Profile Applied (45W/54W)" "power-profile-performance"
-        ;;
+
     powersave)
         echo "Applying Powersave Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 19999999
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 21000000
-        send_notification "Power Manager" "🔋 Powersave Profile Applied (15W/20W)" "power-profile-powersave"
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 28999999
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 29999999
+        send_notification "Power Manager" "🔋 Powersave Profile Applied (19W/29W)" "power-profile-powersave"
         ;;
+
     balanced)
         echo "Applying Balanced Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 27777777
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 35999999
-        send_notification "Power Manager" "⚖️ Balanced Profile Applied (28W/32W)" "power-profile-balanced"
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 33333333
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 47777777
+        send_notification "Power Manager" "⚖️ Balanced Profile Applied (23/47W)" "power-profile-balanced"
         ;;
+
+    performance)
+        echo "Applying Balanced Profile..."
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 37333333
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 49999999
+        send_notification "Power Manager" " !!! MAX POWER !!! " " power-profile-balanced "
+        ;;
+
     *)
-        echo "Usage: $0 {performance|powersave|extreme-powersave|balanced}"
+        echo "Usage: $0 {performance|powersave|balanced}"
         exit 1
         ;;
 esac
