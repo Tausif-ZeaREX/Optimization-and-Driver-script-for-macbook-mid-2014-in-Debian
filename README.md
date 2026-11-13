@@ -666,6 +666,79 @@ kbd-light
 
 ---
 
+Here's the corrected README with a complete `binds { }` example.
+
+Writing
+
+# MacBook Keyboard Backlight Controls for Niri
+
+Control MacBook keyboard backlight brightness on Linux using `brightnessctl` and Niri keybindings.
+
+### Requirements
+
+- Niri
+- brightnessctl
+- MacBook backlight support (`smc::kbd_backlight`)
+
+### Installation
+
+Install brightnessctl:
+
+bash
+
+```bash
+sudo apt install brightnessctl
+```
+
+Open your Niri configuration:
+
+bash
+
+```bash
+nano ~/.config/niri/config.kdl
+```
+
+Add the following shortcuts to your existing `binds { }` block. If you don't have one, you can use this complete example:
+
+### Niri Configuration
+
+kdl
+
+```kdl
+binds {
+    // Existing keybindings
+    Super+Return { spawn "ghostty"; }
+    Super+q { kill; }
+
+    // MacBook keyboard backlight
+    XF86KbdBrightnessDown {
+        spawn "brightnessctl" "-d" "smc::kbd_backlight" "set" "3%-";
+    }
+
+    XF86KbdBrightnessUp {
+        spawn "brightnessctl" "-d" "smc::kbd_backlight" "set" "+3%";
+    }
+}
+```
+
+**Note:** Keep only one top-level `binds { }` block in your Niri configuration. Merge these shortcuts into your existing block if one already exists.
+
+### Keyboard Shortcuts
+
+- `F5` — Decrease keyboard brightness by 3%.
+- `F6` — Increase keyboard brightness by 3%.
+
+### Validate
+
+bash
+
+```bash
+niri validate
+```
+
+**Tested on:** MacBook Pro · Linux · Niri 26.04.
+
+
 ## ⌨️ Desktop Shortcuts & Keybindings
 
 You can map this utility to hotkeys or function keys in your window manager or desktop environment (GNOME, KDE, i3, Hyprland, Sway, etc.):
