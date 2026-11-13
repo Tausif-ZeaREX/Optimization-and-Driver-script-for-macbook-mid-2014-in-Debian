@@ -748,7 +748,7 @@ You can map this utility to hotkeys or function keys in your window manager or d
 
 ---
 
-## Changing resolution in Niri
+# Changing resolution in Niri
 
 In  ~/.config/niri/config.kdl
 
