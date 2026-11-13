@@ -679,7 +679,7 @@ Control MacBook keyboard backlight brightness on Linux using `brightnessctl` and
 - Niri
 - brightnessctl
 - MacBook backlight support (`smc::kbd_backlight`)
-- Also install     sudo apt install wev             for  key detection
+- Also  "     sudo apt install wev   "          for  key detection
 
 ### Installation
 
