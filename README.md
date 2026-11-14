@@ -951,23 +951,23 @@ case "$1" in
 
     powersave)
         echo "Applying Powersave Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 28999999
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 29999999
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 28999999 -s 28000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 29999999  -s 2441
         send_notification "Power Manager" "🔋 Powersave Profile Applied (19W/29W)" "power-profile-powersave"
         ;;
 
     balanced)
         echo "Applying Balanced Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 33333333
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 47777777
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 33333333  -s 28000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 47777777  -s 2441
         send_notification "Power Manager" "⚖️ Balanced Profile Applied (23/47W)" "power-profile-balanced"
         ;;
 
     performance)
         echo "Applying Balanced Profile..."
-        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 37333333
-        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 49999999
-        send_notification "Power Manager" " !!! MAX POWER !!! " " power-profile-balanced "
+        /usr/bin/powercap-set intel-rapl -z 0 -c 0 -l 37777777  -s 28000000
+        /usr/bin/powercap-set intel-rapl -z 0 -c 1 -l 49999999   -s 3000000
+        send_notification "Power Manager" "⚖️!!! MAX POWER !!! " " power-profile-balanced "
         ;;
 
     *)
