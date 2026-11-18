@@ -755,11 +755,8 @@ In  ~/.config/niri/config.kdl
 
 ```
 output "eDP-1" {
-    // Forces a custom 16:10 resolution matching your native screen shape
-    mode custom=true "1920x1200@59.990"
-
-    // Keeps it pixel-for-pixel sharp at this size
-    scale 1.19
+    mode custom=true "1760x1100@59.990"
+    scale 1
 }
 
 ```
